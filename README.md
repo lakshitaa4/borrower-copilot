@@ -4,7 +4,7 @@ A borrower-side self-assessment for Indian lending. Every lender has a model tha
 decides what a borrower gets; the borrower has nothing. This is the borrower's side
 of that table.
 
-Answer nine questions and you get four things, plus a one-page card to argue with:
+Answer 10 questions and you get four things, plus a one-page card to argue with:
 
 | | Output |
 |---|---|
@@ -31,7 +31,7 @@ Fastest way to see what it does: tap one of the three example borrowers on the
 opening screen. Same four questions, three completely different answers.
 
 ```bash
-npm test          # 90 tests, ~1s
+npm test          # 94 tests, ~1s
 npm run build     # typecheck + production build
 npm run docs      # regenerate RULES.md and RUNTHROUGHS.md from the code
 ```

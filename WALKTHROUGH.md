@@ -1,6 +1,6 @@
 # Walkthrough
 
-Five minutes, written. What it does, the three decisions I would defend hardest,
+Five minutes, written. What it does, the decisions I would defend hardest,
 what I would build next, and what I cut.
 
 ---
@@ -103,22 +103,48 @@ lakh at the rate they already offered.
 
 ## 5. What I would build next
 
-1. **Refinance-first as a first-class output.** For Anita, clearing 34% debt beats
-   any new borrowing, and the app says so in prose but does not *quantify* it. A
-   fifth output — "what refinancing your existing debt is worth per month" — would
-   be the single highest-value addition, and the engine already has the pieces.
-2. **A real question about income *variability* for salaried borrowers.** I gate
-   that question on being non-salaried, which is wrong for anyone on a large bonus
-   or commission component. Cheap fix, real accuracy gain.
-3. **Multilingual output, and voice intake.** The borrowers most in need of this are
-   least likely to complete a nine-question form in English. This is a bigger
-   product win than anything else on the list and I would not attempt it without a
-   native reviewer for the copy.
-4. **Sensitivity on the judgement calls.** Roughly a third of the rulebook is my
-   calibration rather than a published norm. A mode that shows how each verdict
-   moves as `safe.utilisation_of_surplus` sweeps 0.5→0.8 would make the tool
-   arguable rather than oracular — and would be the honest way to present it to a
-   credit team.
+In order. Each one attacks a specific weakness I can point to in the current model.
+
+**1. Let the borrower upload their ITR — and their bank statements.**
+Income recognition is the biggest single lever in the whole engine: how much a
+lender will *believe* decides everything downstream. Right now the borrower types
+a number and we take their word for it. An uploaded return turns declared income
+into verified income, and bank statements unlock the banking-surrogate uplift that
+currently sits behind a yes/no question nobody can substantiate. For Ravi this is
+the difference between ₹35,000 of assessed income and a defensible case for more —
+worth lakhs of eligibility, not a rounding adjustment.
+
+**2. Fetch the credit score instead of asking for it.**
+"Do you know your score?" is the widest band-widener in the app: not knowing costs
+2.5 percentage points of range, and the borrowers least likely to know are the ones
+who can least afford the vagueness. Pulling it directly — with consent, via a
+bureau's free consumer API — collapses that band before the borrower ever speaks to
+a lender. It is also the single question where the app currently has to say "we
+cannot narrow this for you", which is exactly the situation the product exists to
+fix.
+
+**3. The copilot: conversational intake, including voice.**
+The 10 questions are a form, and a form is the wrong interface for the people who
+need this most. Anita is a delivery rider; Ravi runs a shop counter. Neither is
+going to work through a form in English on a phone between jobs. Being able to say
+*"cash comes in 40 to 80 thousand, ITR shows 4.2 lakh, never taken a loan"* and have
+it become structured facts — with the range preserved as a range and the unknown
+preserved as unknown — is the difference between a demo and something usable. Voice
+matters more than the chat window: it removes literacy and typing as barriers, not
+just clicks.
+
+The architecture for it is already in the repo and deliberately constrained:
+`server/tools.ts` exposes the kernel as a toolset so the model orchestrates and
+never calculates, `getNextQuestions()` hands it the value-of-information ranking so
+it cannot invent a question, and `src/copilot/guardrails.ts` rejects any generated
+sentence containing a number that is not in the assessment trace. It reads the
+answers out; it does not decide them.
+
+**4. Refinance-first as a fifth output.**
+For Anita, clearing ₹35,000 at up to 34% is worth more per month than any new loan
+could earn her. The app says so in prose but does not *quantify* it, and it should:
+"refinancing what you already owe is worth ₹X a month to you" is a stronger answer
+than "don't borrow". The engine already has every piece needed to compute it.
 
 ## 6. What I cut, and why
 
