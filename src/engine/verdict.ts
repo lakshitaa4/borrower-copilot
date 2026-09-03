@@ -25,6 +25,7 @@ import {
   type ProductKind,
   hasHighCostDebt,
   hi,
+  householdIncome,
   isKnown,
   isProductive,
   lo,
@@ -86,7 +87,9 @@ export function decideVerdict(
   // -----------------------------------------------------------------------
   const rate = price.rateBand.high;
   const tenure = elig.safeTenureMonths;
-  const incomeLow = lo(facts.netMonthlyIncome, 0);
+  // Household income: the co-applicant is jointly liable and shares the costs,
+  // so they belong in the obligation ratio exactly as they belong in the surplus.
+  const incomeLow = householdIncome(facts).low;
   const existingEmi = hi(totalExistingEmi(facts), 0);
 
   // The hard obligation ceiling is measured against a *bad* month, not an
@@ -231,6 +234,18 @@ export function decideVerdict(
       ? `You can borrow the ${formatINRCompact(requested)} you asked for.`
       : `You can borrow up to about ${formatINRCompact(supportable)}.`;
 
+  /*
+   * Never upsell.
+   *
+   * `supportable` is a ceiling, not a target. Ravi asked for ₹15 lakh and his
+   * household supports close to ₹20 lakh, and an earlier version put the larger
+   * figure on his card — a borrower-side tool telling someone to ask for more
+   * than they came for has inverted its own purpose. When the answer is yes, the
+   * recommendation is what they asked for; the headroom above it is theirs to
+   * know about, not something we push them toward.
+   */
+  const recommend = requested !== undefined ? Math.min(requested, supportable) : supportable;
+
   return fire(
     'BORROW',
     'safe.utilisation_of_surplus',
@@ -238,7 +253,7 @@ export function decideVerdict(
     `The instalment sits inside the ${formatINR(safeEmiHigh)} a month your budget supports` +
       `${ceil.stress.survivesBoth ? ', and it still holds if your income drops a fifth or the rate rises two points' : ''}. ` +
       `Take it on the terms on this card, not the first ones offered.`,
-    band(Math.min(elig.useThis.low, supportable), supportable),
+    band(Math.min(elig.useThis.low, recommend), recommend),
   );
 }
 

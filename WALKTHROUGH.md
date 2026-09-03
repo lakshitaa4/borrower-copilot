@@ -1,7 +1,7 @@
 # Walkthrough
 
 Five minutes, written. What it does, the decisions I would defend hardest,
-what I would build next, and what I cut.
+what the numbers taught me, what I would build next, and what I cut.
 
 ---
 
@@ -74,32 +74,61 @@ wrong. But a number asserting *affordability* must never drift upward on missing
 information, so the safe-carry figures shrink as confidence falls. Being vague about
 a price is fair; being vague about affordability is dangerous.
 
-## 4. What building it actually taught me
+## 4. What the numbers taught me
 
-Three bugs worth naming, because each was a category rather than an instance.
+Three things I did not know before building it, all found by pushing thresholds
+around and watching who moved.
 
-**The interview could get stuck.** `isAnswered` required a non-empty array for "list
-your loans", but both *Next* and *Skip* submit an empty one — so it re-asked forever.
-The fix was easy; the useful part was the invariant that came out of it: *whatever an
-answer widget can produce, `isAnswered` must accept*. That test then found two more
-instances, including one that wrote a non-member value into a typed enum field and
-crashed routing.
+**A loan that earns money is the most dangerous case, not the safest one.**
+Anita's scooter genuinely would pay for itself — that is exactly what makes it
+seductive. Sweeping the surplus-utilisation threshold from 0.65 down to 0.55, I
+expected every ceiling to fall. Anita's *rose*, from ₹0 to ₹543. Lowering a
+safety parameter had made her look more able to borrow.
 
-**A quote comparison contradicted itself.** It reported "inside the fair band" and
-"the gap costs you ₹15,115" simultaneously, because the stance was measured on APR
-and the gap on the nominal rate ceiling. Trying to unify them on total cost failed a
-sweep test with a residual ₹61 — which turned out to be a real property, not a bug:
-APR discounts money for time and total cost does not, so two offers at identical APR
-with different rate/fee splits genuinely have different total costs. Neither can be
-derived from the other. The resolution is that APR decides the verdict and total cost
-prices the excess, gated on the verdict so they cannot disagree.
+The cause was an ordering mistake with a real lending lesson inside it: the
+projected earnings were added *after* the surplus was taken, so they were not
+subject to it. A household ₹15,000 short every month was being credited with
+capacity out of income the scooter had not made yet. But the instalment starts in
+month one and the earnings ramp up over months — the borrower has to bridge that
+gap out of a surplus they do not have. So the rule is now absolute: **no surplus,
+no capacity, whatever the loan might earn.** Productive lending is for households
+that can survive the ramp-up, and Anita cannot. It is tested as a property, so a
+tenfold optimistic projection still cannot manufacture capacity.
 
-**A green banner on an unaffordable loan.** The stance judged only price, but sat at
-the top styled as the answer — so a ₹7 lakh offer whose EMI was ₹8,741/month over
-Priya's ceiling showed "Inside the fair band" in green. A fair price on too large a
-loan is still the wrong loan. Affordability now outranks price in the headline, and
-the panel inverts the arithmetic to tell her what to ask for instead: about ₹4.37
-lakh at the rate they already offered.
+**A co-applicant changes both sides of the ledger, and I had modelled one.**
+Ravi's wife earns ₹18,000 teaching. I had that income counted where a lender
+counts it — clubbed into the assessed income — and nowhere else. Not in the
+household surplus, and not in the obligation ratio.
+
+The symptom was a card that contradicted itself: it told him he could carry
+₹41,112 a month, then capped him at ₹13.65 lakh because his ₹26,375 instalment
+was 66% of income — 66% of ₹40,000, his earnings alone, while the ceiling above
+it had been computed on ₹58,000. Three parts of the app held three different
+views of "his income". Defining it once, as a household, moved him from *borrow
+less* to *borrow the ₹15 lakh you asked for* — which is the right answer for a
+man with an unencumbered ₹45,00,000 shop and a second earner at home.
+
+It also surfaced the thing I would not have found by reasoning: a joint
+application is Anita's *only* route. The engine can now sweep it — she needs a
+co-applicant earning about **₹18,000** before she has any capacity at all, and
+about **₹22,400** before the answer becomes yes. She would never learn that from
+a refusal, and the card now tells her.
+
+**Headroom is not a recommendation.** With the household counted properly, Ravi's
+capacity is close to ₹20 lakh. He asked for ₹15 lakh. The card duly said "ask for
+₹19.79 lakh" — and a borrower-side tool that turns spare capacity into a
+suggestion has quietly become the thing it was built to counter. Every lender in
+the market will already offer him the larger number. The recommendation is now
+capped at what the borrower actually came in wanting, and there is a test that
+holds it there.
+
+**The thread running through all three:** there is no single "conservatism" dial
+on this model, because a different constraint binds for each borrower. Priya is
+limited by her own surplus, Ravi by the obligation ratio in a slow month, Anita by
+FOIR headroom her existing app loans have already consumed. Tightening one
+threshold helps one of them and does nothing for the other two — which is why the
+value-of-information engine is per-borrower, and why sweeping thresholds is how I
+found every one of these rather than reading the code.
 
 ## 5. What I would build next
 

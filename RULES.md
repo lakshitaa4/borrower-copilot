@@ -29,6 +29,7 @@ Sourcing is blunt on purpose. `my judgement` means exactly that: a calibration I
 
 | What | Value | Why | Source |
 | --- | --- | --- | --- |
+| **A co-applicant's income counts in the household surplus as well as in the lender's assessment**<br>`safe.co_applicant_counts_twice` | yes | Obvious once stated, and it was missing. A spouse who earns is money the household can actually spend, not only a number a lender clubs in. Leaving them out of the surplus model understated what the household could carry and, worse, hid the one genuine route open to a borrower like Anita: a joint application is the single change that moves her off "do not borrow", and the app could not see it. | my judgement |
 | **Share of net income reserved for saving before any EMI**<br>`safe.savings_floor_pct` | 0.1 | A loan that consumes the borrower's entire surplus leaves them one bad month from borrowing again at a worse rate. Protecting 10% is what stops this tool from simply reproducing the lender's answer. | my judgement |
 | **Monthly buffer held back per financial dependant**<br>`safe.dependant_buffer_rupees` | 3000 | Dependants make expenses less compressible: a household of four cannot cut spending as fast as a single earner when income drops. Anita has two children and an unemployed husband, so ₹9,000 of her income is structurally unavailable. | my judgement |
 | **Share of remaining surplus that may go to a new EMI**<br>`safe.utilisation_of_surplus` | 0.65 | Committing every spare rupee to an EMI is not affordability, it is a coin flip on nothing going wrong. Two thirds keeps a genuine margin, and it is the single value I would expect to be challenged on — it is a risk-appetite choice, not an arithmetic one. | my judgement |
@@ -120,27 +121,27 @@ The tables below are generated from the three borrowers in the brief, each havin
 
 | Question | Δ amount | Δ EMI ceiling | Δ rate | Flips verdict | Asked? |
 | --- | ---: | ---: | ---: | --- | --- |
+| Would anyone apply jointly with you, and what do they earn? | ₹8,30,692 | ₹27,790 | 0% | **yes** — BORROW_LESS / BORROW | yes |
 | Is there a large expense coming in the next year? | ₹3,17,517 | ₹10,622 | 0% | **yes** — BORROW_LESS / DONT_BORROW | yes |
 | Is there anything you could offer as security? | ₹4,75,591 | ₹0 | 1.8% | **yes** — BORROW / BORROW_LESS | yes |
 | How many people depend on your income? | ₹2,08,547 | ₹6,977 | 0% | no | yes |
 | If your income stopped, how many months could you cover from savings? | ₹1,13,228 | ₹3,788 | 0% | no | yes |
 | Can you list the loans you are paying, with the rate on each? | ₹7,828 | ₹0 | 1% | no | yes |
 | Have any payments bounced or been missed in the last year? | ₹7,975 | ₹0 | 1% | no | yes |
-| Would anyone apply jointly with you, and what do they earn? | ₹0 | ₹0 | 0% | no | **dropped** |
 | How long have you been earning this way? | ₹0 | ₹0 | 0% | no | **dropped** |
 | How much of your credit card limit are you using? | ₹0 | ₹0 | 0% | no | **dropped** |
 
-> Dropped for Priya: `coApplicantIncome`, `incomeStabilityYears`, `cardUtilisationPct`. These move nothing for this borrower, so the app does not ask them. They may still be asked of someone else — the set is per-borrower, not fixed.
+> Dropped for Priya: `incomeStabilityYears`, `cardUtilisationPct`. These move nothing for this borrower, so the app does not ask them. They may still be asked of someone else — the set is per-borrower, not fixed.
 
 ### Ravi, 42 — Mysuru · self-employed
 
 | Question | Δ amount | Δ EMI ceiling | Δ rate | Flips verdict | Asked? |
 | --- | ---: | ---: | ---: | --- | --- |
 | Is there anything you could offer as security? | ₹11,61,609 | ₹0 | 9.3% | no | yes |
+| Would anyone apply jointly with you, and what do they earn? | ₹5,91,621 | ₹14,395 | 0% | no | yes |
 | What income do your filed returns show for the year? | ₹5,81,599 | ₹0 | 0% | no | yes |
 | Have any payments bounced or been missed in the last year? | ₹1,05,105 | ₹0 | 3.8% | no | yes |
 | How much extra do you expect to earn each month because of this? | ₹0 | ₹15,100 | 0% | no | yes |
-| Would anyone apply jointly with you, and what do they earn? | ₹2,43,601 | ₹0 | 0% | no | yes |
 | If your income stopped, how many months could you cover from savings? | ₹24,481 | ₹11,289 | 0% | no | yes |
 | Is there a large expense coming in the next year? | ₹0 | ₹9,815 | 0% | no | yes |
 | How many people depend on your income? | ₹0 | ₹6,630 | 0% | no | yes |
@@ -154,7 +155,7 @@ The tables below are generated from the three borrowers in the brief, each havin
 
 | Question | Δ amount | Δ EMI ceiling | Δ rate | Flips verdict | Asked? |
 | --- | ---: | ---: | ---: | --- | --- |
-| Would anyone apply jointly with you, and what do they earn? | ₹1,65,581 | ₹0 | 0% | **yes** — DONT_BORROW / BORROW | yes |
+| Would anyone apply jointly with you, and what do they earn? | ₹3,22,838 | ₹6,788 | 0% | **yes** — DONT_BORROW / BORROW | yes |
 | How much extra do you expect to earn each month because of this? | ₹0 | ₹7,120 | 0% | no | yes |
 | How many people depend on your income? | ₹0 | ₹6,363 | 0% | no | yes |
 | Have any payments bounced or been missed in the last year? | ₹0 | ₹0 | 4.3% | no | yes |
@@ -179,4 +180,4 @@ The tables below are generated from the three borrowers in the brief, each havin
 
 ---
 
-_Generated from 31 rules and 26 questions by `npm run docs:rules`._
+_Generated from 32 rules and 26 questions by `npm run docs:rules`._

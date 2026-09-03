@@ -87,10 +87,22 @@ describe('Ravi — routing to a secured product is the whole answer', () => {
     expect(a.pricing.grades.spanned).toBeGreaterThan(1);
   });
 
-  it('scales him back to what a slow month supports', () => {
-    expect(a.verdict.verdict).toBe('BORROW_LESS');
-    expect(a.verdict.suggestedAmount!.high).toBeLessThan(1500000);
-    expect(a.verdict.suggestedAmount!.high).toBeGreaterThan(1000000);
+  it('clears him for what he asked, once the household is counted properly', () => {
+    /**
+     * This used to assert BORROW_LESS, and that was an artefact rather than a
+     * judgement: his wife's ₹18,000 was counted by the lender but left out of
+     * the household surplus and out of the obligation ratio, so his own
+     * instalment was measured against ₹40,000 instead of ₹58,000. With the
+     * household modelled consistently, ₹15,00,000 against an unencumbered
+     * ₹45,00,000 shop is genuinely affordable.
+     */
+    expect(a.verdict.verdict).toBe('BORROW');
+  });
+
+  it('does not tell him to borrow more than he came for', () => {
+    // His household supports close to ₹20 lakh. He asked for ₹15 lakh. A
+    // borrower-side tool must never turn headroom into a suggestion.
+    expect(a.verdict.suggestedAmount!.high).toBeLessThanOrEqual(1500000);
   });
 
   it('unlocks far more against the shop than his income alone would', () => {
@@ -358,5 +370,29 @@ describe('no surplus means no capacity, whatever the loan might earn', () => {
     expect(withGain.affordability.safeEmi.high).toBeGreaterThan(
       without.affordability.safeEmi.high,
     );
+  });
+});
+
+describe('the app never upsells', () => {
+  it('recommends at most what the borrower asked for', () => {
+    // The whole premise is borrower-side. Suggesting a larger loan than someone
+    // walked in wanting is the behaviour this tool exists to counter.
+    for (const facts of [priya, ravi, anita, priyaMust, raviMust, anitaMust]) {
+      const a = assess(facts);
+      const asked = comparisonAmount(a, facts).amount;
+      if (a.verdict.suggestedAmount && asked > 0) {
+        expect(
+          a.verdict.suggestedAmount.high,
+          `${a.verdict.verdict} suggested more than the ask`,
+        ).toBeLessThanOrEqual(Math.max(asked, 0) + 1);
+      }
+    }
+  });
+
+  it('holds even for a borrower with far more capacity than they want', () => {
+    // Priya could carry more than a ₹50,000 wedding top-up; we still say ₹50,000.
+    const modest = assess({ ...priya, amountWanted: exact(50000) });
+    expect(modest.verdict.verdict).toBe('BORROW');
+    expect(modest.verdict.suggestedAmount!.high).toBeLessThanOrEqual(50000);
   });
 });

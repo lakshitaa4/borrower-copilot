@@ -33,6 +33,7 @@ import {
   type ProductKind,
   hasHighCostDebt,
   hi,
+  householdIncome,
   isKnown,
   isProductive,
   lo,
@@ -270,13 +271,23 @@ export function safeCapacity(
 ): { surplus: Band; safeEmi: Band; steps: TraceStep[] } {
   const steps: TraceStep[] = [];
 
-  const incomeLow = lo(facts.netMonthlyIncome, 0);
-  const incomeHigh = hi(facts.netMonthlyIncome, 0);
+  // A co-applicant is in the same household, so their earnings are spendable
+  // here as well as countable by the lender. Leaving them out of the surplus
+  // model made a co-applicant look like it helped only the lender's arithmetic,
+  // which is wrong twice over: it understates what the household can carry, and
+  // it hid the fact that a joint application is Anita's one genuine route.
+  const ownLow = lo(facts.netMonthlyIncome, 0);
+  const household = householdIncome(facts);
+  const incomeLow = household.low;
+  const incomeHigh = household.high;
   const income = band(incomeLow, incomeHigh);
 
-  // Variable income is discounted, in proportion to how much of it varies.
+  // Variable income is discounted, in proportion to how much of it varies —
+  // and only the borrower's own income, since the variability they described is
+  // theirs. Applying it to the combined figure discounted a co-applicant's
+  // steady salary as if it fluctuated too.
   const variableShare = Math.min(1, Math.max(0, lo(facts.variableIncomeShare, 0)));
-  const volatilityCut = incomeLow * variableShare * VARIABLE_INCOME_HAIRCUT;
+  const volatilityCut = ownLow * variableShare * VARIABLE_INCOME_HAIRCUT;
   if (volatilityCut > 0) {
     steps.push({
       ruleId: 'safe.variable_income_haircut',

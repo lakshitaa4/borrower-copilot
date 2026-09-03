@@ -37,6 +37,10 @@ export const MUST_FACTS = [
 export type MustFact = (typeof MUST_FACTS)[number];
 
 export interface Assessment {
+  /** The answers this assessment was computed from, echoed back so callers can
+   *  re-derive things (the value-of-information sweep, for one) without having
+   *  to carry the facts alongside the result. */
+  facts: BorrowerFacts;
   /** False when the must-set is incomplete — we say so rather than guess. */
   ready: boolean;
   missingMust: MustFact[];
@@ -160,6 +164,7 @@ export function assess(facts: BorrowerFacts): Assessment {
   ];
 
   return {
+    facts,
     ready: missingMust.length === 0,
     missingMust,
     product,

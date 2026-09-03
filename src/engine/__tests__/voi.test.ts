@@ -4,6 +4,7 @@ import { unansweredApplicable, questionById, isAnswered } from '../questions';
 import { priya, priyaMust, ravi, raviMust, anita, anitaMust } from '../personas';
 import { exact } from '../facts';
 import { assess } from '../assess';
+import { SAVINGS_FLOOR_PCT, VARIABLE_INCOME_HAIRCUT } from '../rulebook';
 
 describe('every question we ask must move a number', () => {
   const personas = [priyaMust, raviMust, anitaMust];
@@ -59,11 +60,48 @@ describe('the ranking finds the question that actually matters', () => {
     expect(coApplicant.verdictsSeen).toContain('BORROW');
   });
 
-  it('does not bother Priya about a co-applicant', () => {
-    // A lender would already advance her far more than she can carry, so
-    // adding income to the lender's side moves nothing at all.
+  it('asks Priya about a co-applicant, once household income is modelled', () => {
+    /**
+     * This assertion used to be the opposite, and the old version was wrong.
+     * A co-applicant's income was only being added to the lender's assessment,
+     * so for a borrower already lender-abundant it appeared to move nothing.
+     * But a co-applicant is in the same household: their earnings raise the
+     * surplus too, which is what actually constrains Priya. Once that was
+     * modelled the question started earning its place, correctly.
+     */
     const value = valueOf(priyaMust, questionById('coApplicantIncome')!);
-    expect(value.earnsItsPlace).toBe(false);
+    expect(value.earnsItsPlace).toBe(true);
+    expect(value.amountDeltaRupees).toBeGreaterThan(0);
+  });
+
+  it('counts a co-applicant on both sides of the ledger', () => {
+    const alone = assess(priya);
+    const joint = assess({ ...priya, coApplicantIncome: exact(40000) });
+    // The lender clubs the income...
+    expect(joint.affordability.assessedIncome.high).toBeGreaterThan(
+      alone.affordability.assessedIncome.high,
+    );
+    // ...and the household can actually spend it.
+    expect(joint.affordability.surplus.high).toBeGreaterThan(
+      alone.affordability.surplus.high,
+    );
+  });
+
+  it('does not discount a co-applicant\'s steady salary as variable', () => {
+    // The variability the borrower described is their own. Applying the haircut
+    // to the combined figure docked a spouse's fixed salary as if it fluctuated.
+    // With variableIncomeShare at 1, that bug cost 30% of the co-applicant's
+    // income; the correct answer keeps all of it bar the savings floor, which
+    // does legitimately scale with household income.
+    const CO = 20000;
+    const base = { ...anita, variableIncomeShare: exact(1) };
+    const gain =
+      assess({ ...base, coApplicantIncome: exact(CO) }).affordability.surplus.high -
+      assess(base).affordability.surplus.high;
+
+    expect(gain).toBeCloseTo(CO * (1 - SAVINGS_FLOOR_PCT), 0);
+    // Well clear of what the volatility haircut would have left.
+    expect(gain).toBeGreaterThan(CO * (1 - VARIABLE_INCOME_HAIRCUT));
   });
 });
 

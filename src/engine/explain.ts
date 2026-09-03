@@ -8,6 +8,7 @@
  */
 
 import type { Assessment } from './assess';
+import { rankQuestions } from './voi';
 import type { TraceStep } from './trace';
 import { formatBand, formatINR, formatINRCompact, formatPct, formatMonths } from './trace';
 
@@ -162,24 +163,53 @@ function requestedAmountOf(facts: { amountWanted?: import('./facts').Num }): num
 }
 
 /**
- * The Negotiation Card: one screen a borrower can hold up in a branch.
+ * The card the borrower takes with them.
  *
- * Deliberately short. Everything on it is a number the borrower can defend if
- * the person across the desk pushes back.
+ * It comes in two kinds, and that distinction matters more than anything else
+ * about it. For a borrower who should borrow, it is a negotiation card: what to
+ * ask for, the rate to accept, the walk-away point, the lines to say.
+ *
+ * For a borrower who should *not* borrow, a negotiation card is worse than
+ * useless. Anita's read "Ask for ₹0", "I will not go above ₹0 a month", and then
+ * handed her a rate band to go argue about on a loan she had just been told to
+ * refuse. There is nothing to negotiate, so the card becomes a plan instead: why
+ * not, what to do first, and what would actually change the answer. The brief
+ * asks that every borrower leave with something they can act on tomorrow, and
+ * for the borrower most at risk that cannot be a price list.
  */
+export type CardKind = 'negotiate' | 'act_first';
+
 export interface NegotiationCard {
+  kind: CardKind;
   verdict: string;
-  askFor: string;
-  rateToAccept: string;
-  aprToCompare: string;
-  emiCeiling: string;
-  tenure: string;
-  walkAwayAbove: string;
-  lines: string[];
+  /** Why the answer is what it is, in one sentence. */
+  because: string;
   confidence: string;
+
+  // --- kind === 'negotiate' ---
+  askFor?: string;
+  rateToAccept?: string;
+  aprToCompare?: string;
+  emiCeiling?: string;
+  tenure?: string;
+  walkAwayAbove?: string;
+  /** Lines the borrower can read out at the desk. */
+  lines: string[];
+
+  // --- kind === 'act_first' ---
+  /** The things standing in the way, most binding first. */
+  blockers?: string[];
+  /** Ordered steps, worth the most money first. */
+  firstSteps?: string[];
+  /** One thing that would genuinely change the verdict, if there is one. */
+  whatWouldChangeIt?: string;
 }
 
 export function negotiationCard(a: Assessment): NegotiationCard {
+  const confidence = `${Math.round(a.confidence.score * 100)}% — ${a.confidence.label}`;
+
+  if (a.verdict.verdict === 'DONT_BORROW') return actFirstCard(a, confidence);
+
   const { rateBand, aprBand } = a.pricing;
   const amount = a.verdict.suggestedAmount?.high ?? a.eligibility.useThis.high;
 
@@ -196,6 +226,13 @@ export function negotiationCard(a: Assessment): NegotiationCard {
     );
   }
 
+  // A wide band is honest but a weak anchor. Say what would tighten it.
+  if (rateBand.high - rateBand.low > 4) {
+    lines.push(
+      `My score is not on file yet. Once it is, this band narrows — price me on the score, not on the doubt.`,
+    );
+  }
+
   if (aprBand.high > rateBand.high) {
     lines.push(
       `If the fee pushes the all-in cost past ${formatPct(aprBand.high)}, waive the fee or cut the rate.`,
@@ -203,7 +240,10 @@ export function negotiationCard(a: Assessment): NegotiationCard {
   }
 
   return {
+    kind: 'negotiate',
     verdict: a.verdict.headline,
+    because: a.verdict.because,
+    confidence,
     askFor: formatINRCompact(amount),
     rateToAccept: formatBand(rateBand.low, rateBand.high, (n) => formatPct(n)),
     aprToCompare: formatBand(aprBand.low, aprBand.high, (n) => formatPct(n)),
@@ -211,6 +251,86 @@ export function negotiationCard(a: Assessment): NegotiationCard {
     tenure: formatMonths(a.eligibility.safeTenureMonths),
     walkAwayAbove: formatPct(aprBand.high),
     lines,
-    confidence: `${Math.round(a.confidence.score * 100)}% — ${a.confidence.label}`,
   };
 }
+
+/**
+ * The card for a borrower who should not borrow.
+ *
+ * No amount, no rate, no walk-away point — there is nothing to negotiate. What
+ * they get instead is the reason, the blockers in order of how much they cost,
+ * the steps to take, and the one change that would flip the answer.
+ */
+function actFirstCard(a: Assessment, confidence: string): NegotiationCard {
+  const blockers: string[] = [];
+
+  if (a.affordability.surplus.high <= 0) {
+    blockers.push(
+      `Your household spends more than it earns — ${formatINR(Math.abs(a.affordability.surplus.high))} short in a good month, ` +
+        `before any new instalment.`,
+    );
+  }
+  if (a.eligibility.lenderMax.high <= 0) {
+    blockers.push(
+      `The EMIs you already pay use up everything a lender would allow against ` +
+        `${formatINR(a.affordability.assessedIncome.low)} of countable income, so there is nothing left to lend against.`,
+    );
+  }
+  if (hasHighCostDebt(a)) {
+    blockers.push(
+      `You are already paying more than most lenders would ever charge you, on the loans you have.`,
+    );
+  }
+
+  return {
+    kind: 'act_first',
+    verdict: a.verdict.headline,
+    because: a.verdict.because,
+    confidence,
+    blockers,
+    firstSteps: a.verdict.actions,
+    whatWouldChangeIt: findTheUnlock(a),
+    lines: [
+      `I am not signing anything today.`,
+      `Before I borrow I need to deal with what I already owe.`,
+    ],
+  };
+}
+
+function hasHighCostDebt(a: Assessment): boolean {
+  return a.verdict.actions.some((x) => /app loans first/i.test(x));
+}
+
+/**
+ * The single change that would flip the verdict.
+ *
+ * Asks the value-of-information engine which unanswered question could move the
+ * borrower off "don't borrow", and phrases it as a route rather than as a
+ * question. For Anita this surfaces the co-applicant, which is genuinely the
+ * one thing that changes her answer — and she would have no way of knowing that
+ * from a refusal alone.
+ */
+function findTheUnlock(a: Assessment): string | undefined {
+  const flip = rankQuestions(a.facts, 'additional').find(
+    (v) => v.flipsVerdict && v.verdictsSeen.some((x) => x !== 'DONT_BORROW'),
+  );
+  if (!flip) return undefined;
+
+  const UNLOCKS: Record<string, string> = {
+    coApplicantIncome:
+      'Applying jointly with someone who earns changes this answer — their income is ' +
+      'counted alongside yours, and a lender treats you both as liable.',
+    collateralType:
+      'Pledging something you already own changes this answer, and would cut the rate too.',
+    collateralValue: 'The value of what you can pledge changes this answer.',
+    emergencySavingsMonths: 'Building even one month of savings changes this answer.',
+    existingLoans: 'Clearing or refinancing what you already owe changes this answer.',
+    productiveMonthlyGain: 'What this loan would actually earn you changes this answer.',
+  };
+
+  return (
+    UNLOCKS[flip.question.id] ??
+    `Answering "${flip.question.text.toLowerCase()}" could change this answer.`
+  );
+}
+

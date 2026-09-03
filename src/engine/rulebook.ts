@@ -199,6 +199,20 @@ export const CO_APPLICANT_INCOME_WEIGHT = rule(
 // Borrower-side affordability (cashflow surplus)
 // ---------------------------------------------------------------------------
 
+export const CO_APPLICANT_IN_HOUSEHOLD = rule(
+  'safe.co_applicant_counts_twice',
+  'Affordability — borrower',
+  'A co-applicant\'s income counts in the household surplus as well as in the lender\'s assessment',
+  true,
+  'Obvious once stated, and it was missing. A spouse who earns is money the ' +
+    'household can actually spend, not only a number a lender clubs in. Leaving ' +
+    'them out of the surplus model understated what the household could carry ' +
+    'and, worse, hid the one genuine route open to a borrower like Anita: a ' +
+    'joint application is the single change that moves her off "do not borrow", ' +
+    'and the app could not see it.',
+  JUDGEMENT,
+);
+
 export const SAVINGS_FLOOR_PCT = rule(
   'safe.savings_floor_pct',
   'Affordability — borrower',

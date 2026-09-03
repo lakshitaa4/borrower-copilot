@@ -14,6 +14,7 @@ import {
   type Num,
   exact,
   hi,
+  householdIncome,
   isKnown,
   lo,
   range,
@@ -178,7 +179,7 @@ export function postLoanObligationRatio(
   facts: BorrowerFacts,
   newEmi: number,
 ): number | undefined {
-  const income = lo(facts.netMonthlyIncome, 0);
+  const income = householdIncome(facts).low;
   if (income <= 0) return undefined;
   const existing = lo(facts.existingEmiTotal, 0);
   return (existing + newEmi) / income;

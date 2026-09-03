@@ -261,6 +261,23 @@ export function hasHighCostDebt(facts: BorrowerFacts): boolean {
   );
 }
 
+/**
+ * Income the household actually has to pay from, in a bad month and a good one.
+ *
+ * Defined once, here, because it drifted three times: the surplus model counted
+ * a co-applicant, the lender's assessment counted them, and the obligation-ratio
+ * check did not — so Ravi was told he could carry ₹41,112 a month and then
+ * capped because his instalment was 66% of an income figure that excluded his
+ * wife's ₹18,000. Anything asking "what can this household pay?" uses this.
+ */
+export function householdIncome(facts: BorrowerFacts): { low: number; high: number } {
+  const co = lo(facts.coApplicantIncome, 0);
+  return {
+    low: lo(facts.netMonthlyIncome, 0) + co,
+    high: hi(facts.netMonthlyIncome, 0) + co,
+  };
+}
+
 /** Unencumbered collateral we could route a secured product against. */
 export function usableCollateral(facts: BorrowerFacts): Num {
   if (facts.collateralEncumbered === true) return exact(0);

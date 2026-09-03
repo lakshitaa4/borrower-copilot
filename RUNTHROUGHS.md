@@ -10,7 +10,7 @@ Each borrower is shown twice: once having answered only the core set, and once a
 
 **Asks for:** ₹8,00,000 personal loan for a wedding
 
-### The questions the app asked (16)
+### The questions the app asked (17)
 
 | # | Tier | Question | Answer | Why it was asked |
 | ---: | --- | --- | --- | --- |
@@ -24,12 +24,13 @@ Each borrower is shown twice: once having answered only the core set, and once a
 | 8 | core | How much rent do you pay? | ₹28,000 | Could change the answer itself, not just the numbers. |
 | 9 | core | How old are you? | 29 | Worth up to ₹1,20,803 on what you can borrow. |
 | 10 | core | Do you know your credit score? | 780 | Worth up to ₹94,720 on what you can borrow. |
-| 11 | additional | Is there a large expense coming in the next year? | doesn't know | Could change the answer itself, not just the numbers. |
-| 12 | additional | Is there anything you could offer as security? | none | Could change the answer itself, not just the numbers. |
-| 13 | additional | How many people depend on your income? | 0 | Worth up to ₹2,13,729 on what you can borrow. |
-| 14 | additional | If your income stopped, how many months could you cover from savings? | 2 months | Worth up to ₹2,03,107 on what you can borrow. |
-| 15 | additional | Can you list the loans you are paying, with the rate on each? | Car loan ₹14,000/mo | Worth up to ₹11,445 on what you can borrow. |
-| 16 | additional | Have any payments bounced or been missed in the last year? | 0 | Worth up to ₹11,649 on what you can borrow. |
+| 11 | additional | Would anyone apply jointly with you, and what do they earn? | doesn't know | Could change the answer itself, not just the numbers. |
+| 12 | additional | Is there a large expense coming in the next year? | doesn't know | Could change the answer itself, not just the numbers. |
+| 13 | additional | Is there anything you could offer as security? | none | Could change the answer itself, not just the numbers. |
+| 14 | additional | How many people depend on your income? | 0 | Worth up to ₹2,13,729 on what you can borrow. |
+| 15 | additional | If your income stopped, how many months could you cover from savings? | 2 months | Worth up to ₹2,03,107 on what you can borrow. |
+| 16 | additional | Can you list the loans you are paying, with the rate on each? | Car loan ₹14,000/mo | Worth up to ₹11,445 on what you can borrow. |
+| 17 | additional | Have any payments bounced or been missed in the last year? | 0 | Worth up to ₹11,649 on what you can borrow. |
 
 > **Not asked:** `documentedIncomeAnnual`, `variableIncomeShare`, `cardUtilisationPct`, `productiveMonthlyGain` — either they do not apply to this borrower, or the engine measured that they would not move any of the four outputs.
 
@@ -141,15 +142,15 @@ Each borrower is shown twice: once having answered only the core set, and once a
 | 10 | core | Do you know your credit score? | doesn't know | Worth up to ₹94,579 on what you can borrow. |
 | 11 | additional | Is there anything you could offer as security? | property | Worth up to ₹8,38,944 on what you can borrow. |
 | 12 | additional | Roughly what is it worth? | ₹45,00,000 | Worth up to ₹8,38,944 on what you can borrow. |
-| 13 | additional | Is there already a loan against it? | no | Worth up to ₹8,38,944 on what you can borrow. |
-| 14 | additional | How much extra do you expect to earn each month because of this? | ₹25,000 | Worth up to ₹3,68,218 on what you can borrow. |
-| 15 | additional | What income do your filed returns show for the year? | ₹4,20,000 | Worth up to ₹14,70,049 on what you can borrow. |
-| 16 | additional | Have any payments bounced or been missed in the last year? | 0 | Worth up to ₹3,26,053 on what you can borrow. |
-| 17 | additional | Would anyone apply jointly with you, and what do they earn? | ₹18,000 | Worth up to ₹7,70,638 on what you can borrow. |
-| 18 | additional | Is there a large expense coming in the next year? | doesn't know | Worth up to ₹6,17,097 on what you can borrow. |
-| 19 | additional | If your income stopped, how many months could you cover from savings? | 4 months | Worth up to ₹5,13,125 on what you can borrow. |
-| 20 | additional | How many people depend on your income? | 2 | Worth up to ₹4,23,865 on what you can borrow. |
-| 21 | additional | How much of your income changes from month to month? | 0.5 | Worth up to ₹3,43,081 on what you can borrow. |
+| 13 | additional | Would anyone apply jointly with you, and what do they earn? | ₹18,000 | Could change the answer itself, not just the numbers. |
+| 14 | additional | Is there already a loan against it? | no | Could change the answer itself, not just the numbers. |
+| 15 | additional | If your income stopped, how many months could you cover from savings? | 4 months | Could change the answer itself, not just the numbers. |
+| 16 | additional | How much extra do you expect to earn each month because of this? | ₹25,000 | Worth up to ₹4,70,998 on what you can borrow. |
+| 17 | additional | Have any payments bounced or been missed in the last year? | 0 | Worth up to ₹3,29,123 on what you can borrow. |
+| 18 | additional | What income do your filed returns show for the year? | ₹4,20,000 | Worth up to ₹11,28,650 on what you can borrow. |
+| 19 | additional | Is there a large expense coming in the next year? | doesn't know | Worth up to ₹2,17,711 on what you can borrow. |
+| 20 | additional | How many people depend on your income? | 2 | Worth up to ₹8,371 on what you can borrow. |
+| 21 | additional | How much of your income changes from month to month? | 0.5 | Worth up to ₹1,37,125 on what you can borrow. |
 
 > **Not asked:** `cardUtilisationPct`, `existingLoans` — either they do not apply to this borrower, or the engine measured that they would not move any of the four outputs.
 
@@ -157,15 +158,15 @@ Each borrower is shown twice: once having answered only the core set, and once a
 
 **O1 — Should you borrow?**
 
-> Borrow less — around ₹13.6 lakh.
+> You can borrow the ₹15 lakh you asked for.
 
-*Why:* At ₹15 lakh, 66% of your income in a slow month would go to fixed repayments. Past 60% there is no room to absorb anything unexpected, and ₹13.6 lakh keeps you under it.
+*Why:* The instalment sits inside the ₹40,640 a month your budget supports, and it still holds if your income drops a fifth or the rate rises two points. Take it on the terms on this card, not the first ones offered.
 
 **O2 — How much can you borrow?**
 
-> A lender will likely sanction ₹15.74 lakh – ₹25.01 lakh. You can safely carry ₹4.73 lakh – ₹17.59 lakh. Work with ₹17.59 lakh.
+> A lender will likely sanction ₹15.74 lakh – ₹25.01 lakh. You can safely carry ₹10.52 lakh – ₹23.38 lakh. Work with ₹23.38 lakh.
 
-*Why:* A lender sizes the loan against your income and would go to about ₹25.01 lakh; your own budget, after everything you actually spend, supports ₹17.59 lakh. The smaller number is the real one.
+*Why:* A lender sizes the loan against your income and would go to about ₹25.01 lakh; your own budget, after everything you actually spend, supports ₹23.38 lakh. The smaller number is the real one.
 
 **O3 — What is a fair rate?**
 
@@ -175,21 +176,21 @@ Each borrower is shown twice: once having answered only the core set, and once a
 
 **O4 — What EMI should you agree to?**
 
-> Do not go above ₹30,578 a month.
+> Do not go above ₹40,640 a month.
 
-*Why:* That is what is left after your household costs, rent, the EMIs you already pay and money kept back for saving — and only part of it, so a bad month does not become a missed payment. It does not survive an income drop of a fifth plus a two-point rate rise, which is why the amount is capped where it is.
+*Why:* That is what is left after your household costs, rent, the EMIs you already pay and money kept back for saving — and only part of it, so a bad month does not become a missed payment. It still holds if your income drops a fifth and the rate rises two points.
 
 | | |
 | --- | --- |
 | Lender will likely sanction | ₹15.74 lakh – ₹25.01 lakh |
-| You can safely carry | ₹4.73 lakh – ₹17.59 lakh |
-| **Use this number** | **₹17.59 lakh** |
+| You can safely carry | ₹10.52 lakh – ₹23.38 lakh |
+| **Use this number** | **₹23.38 lakh** |
 | Binding constraint | borrower |
 | Fair rate | 9% – 17.4% |
 | All-in APR | 9% – 17.9% |
-| EMI ceiling | ₹30,578 |
+| EMI ceiling | ₹40,640 |
 | Over | 10 years |
-| Stress test (income −20%, rate +2pp) | **fails** — short ₹5,000/month |
+| Stress test (income −20%, rate +2pp) | holds |
 | Product | lap (redirected) |
 | Confidence | 82% (high) |
 
@@ -211,20 +212,21 @@ Each borrower is shown twice: once having answered only the core set, and once a
 ### The Negotiation Card
 
 ```
-  Borrow less — around ₹13.6 lakh.
+  You can borrow the ₹15 lakh you asked for.
 
-  Ask for            ₹13.6 lakh
+  Ask for            ₹15 lakh
   Rate to accept     9% – 17.4%
   All-in APR         9% – 17.9%
-  EMI ceiling        ₹30,578 a month
+  EMI ceiling        ₹40,640 a month
   Over               10 years
   Walk away above    17.9% all-in
 
   Say this:
    • My profile is risk grade A–C. Fair for that is 9%–17.4%, not more.
    • Quote me the all-in APR including the processing fee, in writing.
-   • I will not go above ₹30,578 a month.
+   • I will not go above ₹40,640 a month.
    • I want a loan against property, not an unsecured one.
+   • My score is not on file yet. Once it is, this band narrows — price me on the score, not on the doubt.
    • If the fee pushes the all-in cost past 17.9%, waive the fee or cut the rate.
 
   Confidence in these numbers: 82% — high
@@ -234,10 +236,10 @@ Each borrower is shown twice: once having answered only the core set, and once a
 
 | | Core set only | After the full interview |
 | --- | --- | --- |
-| Verdict | BORROW_LESS | BORROW_LESS |
-| Use this amount | ₹5.21 lakh | ₹17.59 lakh |
+| Verdict | BORROW_LESS | BORROW |
+| Use this amount | ₹5.21 lakh | ₹23.38 lakh |
 | Rate band | 16% – 30.2% (14.2% wide) | 9% – 17.4% (8.4% wide) |
-| EMI ceiling | ₹31,626 | ₹30,578 |
+| EMI ceiling | ₹31,626 | ₹40,640 |
 | Confidence | 36% | 82% |
 | Values assumed | 2 | 0 |
 
@@ -247,7 +249,7 @@ Each borrower is shown twice: once having answered only the core set, and once a
 
 **Asks for:** ₹1,50,000 for an electric scooter to double delivery runs
 
-### The questions the app asked (12)
+### The questions the app asked (13)
 
 | # | Tier | Question | Answer | Why it was asked |
 | ---: | --- | --- | --- | --- |
@@ -261,8 +263,9 @@ Each borrower is shown twice: once having answered only the core set, and once a
 | 8 | core | How much rent do you pay? | ₹6,000 | Worth up to ₹2,544 on your monthly ceiling. |
 | 9 | core | How old are you? | 35 | Would not change any of your numbers. |
 | 10 | core | Do you know your credit score? | doesn't know | Could narrow your rate by 6.1%. |
-| 11 | additional | Have any payments bounced or been missed in the last year? | 1 | Could narrow your rate by 4.5%. |
-| 12 | additional | Is there anything you could offer as security? | none | Could narrow your rate by 4%. |
+| 11 | additional | Would anyone apply jointly with you, and what do they earn? | doesn't know | Could change the answer itself, not just the numbers. |
+| 12 | additional | Have any payments bounced or been missed in the last year? | 1 | Could narrow your rate by 4.5%. |
+| 13 | additional | Is there anything you could offer as security? | none | Could narrow your rate by 4%. |
 
 > **Not asked:** `documentedIncomeAnnual`, `variableIncomeShare`, `cardUtilisationPct`, `productiveMonthlyGain`, `existingLoans` — either they do not apply to this borrower, or the engine measured that they would not move any of the four outputs.
 
@@ -328,19 +331,16 @@ Each borrower is shown twice: once having answered only the core set, and once a
 ```
   Do not take this loan.
 
-  Ask for            ₹0
-  Rate to accept     13.3% – 28.2%
-  All-in APR         13.8% – 30.3%
-  EMI ceiling        ₹0 a month
-  Over               3 years
-  Walk away above    30.3% all-in
+  Ask for            undefined
+  Rate to accept     undefined
+  All-in APR         undefined
+  EMI ceiling        undefined a month
+  Over               undefined
+  Walk away above    undefined all-in
 
   Say this:
-   • My profile is risk grade C–D. Fair for that is 13.3%–28.2%, not more.
-   • Quote me the all-in APR including the processing fee, in writing.
-   • I will not go above ₹0 a month.
-   • I want a two-wheeler / ev loan, not an unsecured one.
-   • If the fee pushes the all-in cost past 30.3%, waive the fee or cut the rate.
+   • I am not signing anything today.
+   • Before I borrow I need to deal with what I already owe.
 
   Confidence in these numbers: 59% — moderate
 ```
