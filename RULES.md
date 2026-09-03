@@ -34,6 +34,7 @@ Sourcing is blunt on purpose. `my judgement` means exactly that: a calibration I
 | **Share of remaining surplus that may go to a new EMI**<br>`safe.utilisation_of_surplus` | 0.65 | Committing every spare rupee to an EMI is not affordability, it is a coin flip on nothing going wrong. Two thirds keeps a genuine margin, and it is the single value I would expect to be challenged on — it is a risk-appetite choice, not an arithmetic one. | my judgement |
 | **Emergency-fund target and the haircut applied when it is short**<br>`safe.emergency_fund` | `targetMonths`: 3<br>`haircutBelowTarget`: 0.2<br>`haircutBelowOneMonth`: 0.35 | Savings are what convert a shock into an inconvenience instead of a default. A borrower with no buffer needs a smaller EMI than an identical borrower with three months banked, and no FOIR calculation anywhere captures that. | my judgement |
 | **Haircut applied to the variable portion of income**<br>`safe.variable_income_haircut` | 0.3 | Applied to the variable share only, so a borrower who is 20% commission is discounted a fifth as hard as one who is fully on commission. For safe-carry we additionally take the *low* end of any income range, because the borrower has to survive the bad months, not the average one. | my judgement |
+| **A household with no monthly surplus has zero safe capacity, whatever the loan might earn**<br>`safe.no_surplus_no_capacity` | yes | Projected earnings cannot fund an instalment that starts before they do. Without this rule, Anita — who is ₹15,000 to ₹18,000 short every month before borrowing anything — was credited with a small positive EMI ceiling out of what the scooter was expected to earn. The direction is simply wrong: money you are hoping for is not money you can pay with. If there is nothing spare today, the answer is zero, and the productive-loan adjustment applies only to a household that is already in surplus. | my judgement |
 | **Share of projected income from a productive loan that counts**<br>`safe.productive_gain_haircut` | 0.5 | Anita's second scooter and Ravi's new stock line genuinely will earn — but projections made while asking for money are optimistic, and the EMI starts before the earnings do. Half, and never enough to exceed the lender ceiling. | my judgement |
 
 ### Products
@@ -178,4 +179,4 @@ The tables below are generated from the three borrowers in the brief, each havin
 
 ---
 
-_Generated from 30 rules and 26 questions by `npm run docs:rules`._
+_Generated from 31 rules and 26 questions by `npm run docs:rules`._

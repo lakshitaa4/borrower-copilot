@@ -14,6 +14,7 @@
  */
 
 import {
+  NO_SURPLUS_NO_CAPACITY,
   FOIR_LADDER,
   FOIR_ADJUSTMENTS,
   FOIR_HARD_CEILING,
@@ -395,6 +396,25 @@ export function safeCapacity(
         unit: 'rupees',
       });
     }
+  }
+
+  // No surplus, no capacity — and this overrides the productive-loan credit
+  // above, because earnings from a loan not yet taken cannot service an
+  // instalment that starts immediately. Without it, a household spending more
+  // than it earns was credited with a positive ceiling out of a projection.
+  if (NO_SURPLUS_NO_CAPACITY && surplus.high <= 0) {
+    safeLow = 0;
+    safeHigh = 0;
+    steps.push({
+      ruleId: 'safe.no_surplus_no_capacity',
+      label: 'Nothing spare to pay from',
+      detail:
+        `Even in a good month the household spends more than it earns, so there ` +
+        `is no room for an instalment at all — whatever this loan might go on to ` +
+        `earn, the payments start before the earnings do.`,
+      value: 0,
+      unit: 'rupees',
+    });
   }
 
   return {

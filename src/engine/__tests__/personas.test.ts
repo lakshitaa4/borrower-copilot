@@ -5,6 +5,7 @@ import { bandWidth } from '../emi';
 import { PRODUCTS } from '../rulebook';
 import { comparisonAmount } from '../explain';
 import { compareQuote } from '../pricing';
+import { exact } from '../facts';
 
 /**
  * Golden tests for the three borrowers in the brief.
@@ -308,5 +309,54 @@ describe('a quote comparison never contradicts itself', () => {
     // Personal loans top out at 60 months in the rulebook.
     expect(compareQuote(priya, a.product, 900000, 13, 65, 1, 0).tenureBeyondProductMax).toBe(true);
     expect(compareQuote(priya, a.product, 900000, 13, 60, 1, 0).tenureBeyondProductMax).toBe(false);
+  });
+});
+
+describe('no surplus means no capacity, whatever the loan might earn', () => {
+  /**
+   * Found by the rule-change drill: at a lower surplus-utilisation the
+   * productive-loan credit pushed Anita's ceiling to ₹543 despite her
+   * household being ₹15,000-18,000 short every month. Money you are hoping
+   * for is not money you can pay with.
+   */
+  it('holds for Anita, who spends more than she earns', () => {
+    const a = assess(anita);
+    expect(a.affordability.surplus.high).toBeLessThan(0);
+    expect(a.affordability.safeEmi.high).toBe(0);
+    expect(a.eligibility.safeMax.high).toBe(0);
+  });
+
+  it('is not defeated by an optimistic earnings projection', () => {
+    // Ten times the real projection must still not manufacture capacity.
+    const a = assess({ ...anita, productiveMonthlyGain: exact(120000) });
+    expect(a.affordability.safeEmi.high).toBe(0);
+    expect(a.verdict.verdict).toBe('DONT_BORROW');
+  });
+
+  it('holds as a property, not as a tuned constant', () => {
+    // The drill changes thresholds. This invariant must survive all of them.
+    const variants = [
+      anita,
+      { ...anita, householdExpenses: exact(30000) },
+      { ...anita, dependants: exact(6) },
+      { ...anita, productiveMonthlyGain: exact(50000) },
+      { ...anita, rent: exact(20000) },
+    ];
+    for (const facts of variants) {
+      const a = assess(facts);
+      if (a.affordability.surplus.high <= 0) {
+        expect(a.affordability.safeEmi.high).toBe(0);
+      }
+    }
+  });
+
+  it('still credits projected earnings to a household that is in surplus', () => {
+    // The rule must not neuter the productive-loan adjustment generally.
+    const withGain = assess({ ...ravi, productiveMonthlyGain: exact(25000) });
+    const without = assess({ ...ravi, productiveMonthlyGain: undefined });
+    expect(withGain.affordability.surplus.high).toBeGreaterThan(0);
+    expect(withGain.affordability.safeEmi.high).toBeGreaterThan(
+      without.affordability.safeEmi.high,
+    );
   });
 });

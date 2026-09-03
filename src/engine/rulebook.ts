@@ -260,6 +260,21 @@ export const VARIABLE_INCOME_HAIRCUT = rule(
   JUDGEMENT,
 );
 
+export const NO_SURPLUS_NO_CAPACITY = rule(
+  'safe.no_surplus_no_capacity',
+  'Affordability — borrower',
+  'A household with no monthly surplus has zero safe capacity, whatever the loan might earn',
+  true,
+  'Projected earnings cannot fund an instalment that starts before they do. ' +
+    'Without this rule, Anita — who is ₹15,000 to ₹18,000 short every month ' +
+    'before borrowing anything — was credited with a small positive EMI ceiling ' +
+    'out of what the scooter was expected to earn. The direction is simply wrong: ' +
+    'money you are hoping for is not money you can pay with. If there is nothing ' +
+    'spare today, the answer is zero, and the productive-loan adjustment applies ' +
+    'only to a household that is already in surplus.',
+  JUDGEMENT,
+);
+
 export const PRODUCTIVE_GAIN_HAIRCUT = rule(
   'safe.productive_gain_haircut',
   'Affordability — borrower',

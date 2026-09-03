@@ -247,7 +247,7 @@ Each borrower is shown twice: once having answered only the core set, and once a
 
 **Asks for:** ₹1,50,000 for an electric scooter to double delivery runs
 
-### The questions the app asked (17)
+### The questions the app asked (12)
 
 | # | Tier | Question | Answer | Why it was asked |
 | ---: | --- | --- | --- | --- |
@@ -261,15 +261,10 @@ Each borrower is shown twice: once having answered only the core set, and once a
 | 8 | core | How much rent do you pay? | ₹6,000 | Worth up to ₹2,544 on your monthly ceiling. |
 | 9 | core | How old are you? | 35 | Would not change any of your numbers. |
 | 10 | core | Do you know your credit score? | doesn't know | Could narrow your rate by 6.1%. |
-| 11 | additional | How much extra do you expect to earn each month because of this? | ₹12,000 | Worth up to ₹6,541 on your monthly ceiling. |
-| 12 | additional | Would anyone apply jointly with you, and what do they earn? | doesn't know | Could change the answer itself, not just the numbers. |
-| 13 | additional | How many people depend on your income? | 3 | Worth up to ₹4,483 on your monthly ceiling. |
-| 14 | additional | Have any payments bounced or been missed in the last year? | 1 | Could narrow your rate by 4.6%. |
-| 15 | additional | Is there anything you could offer as security? | none | Could narrow your rate by 4%. |
-| 16 | additional | If your income stopped, how many months could you cover from savings? | 0 months | Worth up to ₹1,447 on your monthly ceiling. |
-| 17 | additional | How much of your income changes from month to month? | 0.6 | Worth up to ₹1,464 on your monthly ceiling. |
+| 11 | additional | Have any payments bounced or been missed in the last year? | 1 | Could narrow your rate by 4.5%. |
+| 12 | additional | Is there anything you could offer as security? | none | Could narrow your rate by 4%. |
 
-> **Not asked:** `documentedIncomeAnnual`, `cardUtilisationPct`, `existingLoans` — either they do not apply to this borrower, or the engine measured that they would not move any of the four outputs.
+> **Not asked:** `documentedIncomeAnnual`, `variableIncomeShare`, `cardUtilisationPct`, `productiveMonthlyGain`, `existingLoans` — either they do not apply to this borrower, or the engine measured that they would not move any of the four outputs.
 
 ### The four outputs
 
@@ -287,7 +282,7 @@ Each borrower is shown twice: once having answered only the core set, and once a
 
 **O3 — What is a fair rate?**
 
-> 13.8% – 27.7% interest — an all-in 14.5% – 29.7% once the 1% – 2.5% fee is counted.
+> 13.3% – 28.2% interest — an all-in 13.8% – 30.3% once the 1% – 2.5% fee is counted.
 
 *Why:* Your profile places you in risk grade C to D, and that is what this product costs at that grade. Compare lenders on the all-in figure, not the headline rate — the fee is where the difference hides.
 
@@ -303,22 +298,22 @@ Each borrower is shown twice: once having answered only the core set, and once a
 | You can safely carry | ₹0 – ₹0 |
 | **Use this number** | **₹0** |
 | Binding constraint | borrower |
-| Fair rate | 13.8% – 27.7% |
-| All-in APR | 14.5% – 29.7% |
+| Fair rate | 13.3% – 28.2% |
+| All-in APR | 13.8% – 30.3% |
 | EMI ceiling | ₹0 |
 | Over | 3 years |
-| Stress test (income −20%, rate +2pp) | **fails** — short ₹1,268/month |
+| Stress test (income −20%, rate +2pp) | **fails** — short ₹1,277/month |
 | Product | two_wheeler (redirected) |
-| Confidence | 75% (good) |
+| Confidence | 59% (moderate) |
 
 **The tenure trade-off**
 
 | Tenure | EMI | Total interest |
 | --- | ---: | ---: |
-| 1 year | ₹2,890 | ₹4,683 |
-| 2 years | ₹1,642 | ₹9,397 |
-| 3 years | ₹1,235 | ₹14,477 |
-| 4 years | ₹1,040 | ₹19,911 |
+| 1 year | ₹2,898 | ₹4,782 |
+| 2 years | ₹1,650 | ₹9,602 |
+| 3 years | ₹1,245 | ₹14,804 |
+| 4 years | ₹1,049 | ₹20,372 |
 
 ### What to do next
 
@@ -334,20 +329,20 @@ Each borrower is shown twice: once having answered only the core set, and once a
   Do not take this loan.
 
   Ask for            ₹0
-  Rate to accept     13.8% – 27.7%
-  All-in APR         14.5% – 29.7%
+  Rate to accept     13.3% – 28.2%
+  All-in APR         13.8% – 30.3%
   EMI ceiling        ₹0 a month
   Over               3 years
-  Walk away above    29.7% all-in
+  Walk away above    30.3% all-in
 
   Say this:
-   • My profile is risk grade C–D. Fair for that is 13.8%–27.7%, not more.
+   • My profile is risk grade C–D. Fair for that is 13.3%–28.2%, not more.
    • Quote me the all-in APR including the processing fee, in writing.
    • I will not go above ₹0 a month.
    • I want a two-wheeler / ev loan, not an unsecured one.
-   • If the fee pushes the all-in cost past 29.7%, waive the fee or cut the rate.
+   • If the fee pushes the all-in cost past 30.3%, waive the fee or cut the rate.
 
-  Confidence in these numbers: 75% — good
+  Confidence in these numbers: 59% — moderate
 ```
 
 ### If they had stopped after the core questions
@@ -356,7 +351,7 @@ Each borrower is shown twice: once having answered only the core set, and once a
 | --- | --- | --- |
 | Verdict | DONT_BORROW | DONT_BORROW |
 | Use this amount | ₹0 | ₹0 |
-| Rate band | 9.5% – 23.6% (14.1% wide) | 13.8% – 27.7% (13.8% wide) |
+| Rate band | 9.5% – 23.6% (14.1% wide) | 13.3% – 28.2% (14.9% wide) |
 | EMI ceiling | ₹6,281 | ₹0 |
-| Confidence | 39% | 75% |
+| Confidence | 39% | 59% |
 | Values assumed | 2 | 0 |
