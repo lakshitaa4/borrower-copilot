@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore, useAssessment, useNextQuestions } from '../state/store';
 import {
   skipPatch,
@@ -42,6 +42,18 @@ export function Interview() {
 
   const { done: coreDone, total: coreTotal } = coreProgress(facts);
   const inCore = current?.question.tier === 'core';
+
+  /*
+   * Bring each new question into view.
+   *
+   * The same missing-navigation problem as the screen switch: answer a question
+   * after scrolling down to read what is coming next, and the replacement card
+   * renders above the viewport with nothing visible where you were looking.
+   */
+  const currentId = current?.question.id;
+  useEffect(() => {
+    if (currentId) window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  }, [currentId]);
 
   if (!current) {
     return (
