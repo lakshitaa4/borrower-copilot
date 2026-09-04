@@ -137,14 +137,40 @@ found every one of these rather than reading the code.
 
 In order. Each one attacks a specific weakness I can point to in the current model.
 
-**1. Let the borrower upload their ITR — and their bank statements.**
-Income recognition is the biggest single lever in the whole engine: how much a
-lender will *believe* decides everything downstream. Right now the borrower types
-a number and we take their word for it. An uploaded return turns declared income
-into verified income, and bank statements unlock the banking-surrogate uplift that
-currently sits behind a yes/no question nobody can substantiate. For Ravi this is
-the difference between ₹35,000 of assessed income and a defensible case for more —
-worth lakhs of eligibility, not a rounding adjustment.
+**1. Stop taking their word for it — one upload for each half of O2.**
+
+*The lender's half: the ITR, and the bank statements.* Income recognition is the
+biggest single lever in the engine — how much a lender will *believe* decides
+everything downstream. Right now the borrower types a number and we take it. An
+uploaded return turns declared income into verified income, and bank statements
+unlock the banking-surrogate uplift that currently sits behind a yes/no question
+nobody can substantiate. For Ravi that is the difference between ₹35,000 of
+assessed income and a defensible case for more.
+
+*The borrower's half: three months of UPI.* `householdExpenses` is the widest
+assumption in the whole model — unanswered, the app guesses 35% to 55% of income
+and admits on screen that this is the loosest number in the assessment. It is
+also the most understated figure in consumer lending, because people genuinely do
+not know what they spend. In India that is a solved problem waiting to be picked
+up: for Anita and Ravi almost every rupee leaves by UPI, so three months of
+statements are a better record of the household than any question I could ask.
+
+Categorising it would do more than tighten the number. It would separate
+**compressible** spending from **non-compressible** — rent, school fees and
+existing EMIs cannot be cut in a bad month; eating out can. The engine currently
+treats every rupee of expenditure as equally fixed, which is why the dependant
+buffer exists as a crude proxy for exactly this. With real categories, the stress
+test stops asking "could you survive a 20% income drop?" and starts asking "could
+you survive it *given what you actually cannot stop paying?*" — which is the
+question that decides whether a loan defaults.
+
+Two honest notes. The sanctioned route for this in India is the Account
+Aggregator framework, consent-based and revocable, rather than asking people to
+upload PDFs — building it any other way would be the wrong lesson. And it cuts
+against the promise on the front page that nothing leaves the device. Statement
+parsing would have to happen on-device, or the claim has to change; I would
+rather narrow the feature than quietly widen what the app does with someone's
+transaction history.
 
 **2. Fetch the credit score instead of asking for it.**
 "Do you know your score?" is the widest band-widener in the app: not knowing costs
