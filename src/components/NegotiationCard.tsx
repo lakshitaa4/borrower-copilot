@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useStore, useAssessment } from '../state/store';
-import { negotiationCard, comparisonAmount } from '../engine/explain';
+import {
+  negotiationCard,
+  comparisonAmount,
+  type NegotiationCard,
+} from '../engine/explain';
 import { compareQuote, type QuoteComparison } from '../engine/pricing';
 import { principalFromEmi } from '../engine/emi';
 import { formatINR, formatPct } from '../engine/trace';
@@ -16,6 +20,12 @@ import { formatINR, formatPct } from '../engine/trace';
 export function NegotiationCardView() {
   const a = useAssessment();
   const card = negotiationCard(a);
+
+  // Two kinds, and the component must branch or it renders empty rows. The
+  // engine stopped returning an amount, a rate and a walk-away point for a
+  // borrower who should not borrow; rendering the negotiate layout regardless
+  // produced a card with blank values and a stray "/mo".
+  if (card.kind === 'act_first') return <ActFirstCard card={card} />;
 
   return (
     <div className="negcard">
@@ -51,6 +61,68 @@ export function NegotiationCardView() {
 
       <div className="say">
         <h3>Say this</h3>
+        <ul className="plain">
+          {card.lines.map((l, i) => (
+            <li key={i}>“{l}”</li>
+          ))}
+        </ul>
+      </div>
+
+      <p className="negcard-foot">
+        Confidence in these numbers: {card.confidence}. Based only on what you told us — no
+        credit report was pulled.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * The card for a borrower who should not borrow.
+ *
+ * No amount, no rate, no walk-away point — there is nothing to negotiate. What
+ * they take away instead is why, what to do first in the order that saves the
+ * most, and the one change that would flip the answer.
+ */
+function ActFirstCard({ card }: { card: NegotiationCard }) {
+  return (
+    <div className="negcard" data-kind="act_first">
+      <div className="negcard-head">
+        <span className="output-id">BEFORE YOU BORROW ANYTHING</span>
+        <p className="answer">{card.verdict}</p>
+        <p className="because">{card.because}</p>
+      </div>
+
+      {card.blockers && card.blockers.length > 0 && (
+        <div className="blockers">
+          <h3>What is in the way</h3>
+          <ul className="plain">
+            {card.blockers.map((b, i) => (
+              <li key={i}>{b}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {card.firstSteps && card.firstSteps.length > 0 && (
+        <div className="say">
+          <h3>Do this first</h3>
+          <ol className="steps">
+            {card.firstSteps.map((f, i) => (
+              <li key={i}>{f}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {card.whatWouldChangeIt && (
+        <div className="unlock">
+          <h3>What would change this answer</h3>
+          <p>{card.whatWouldChangeIt}</p>
+        </div>
+      )}
+
+      <div className="say">
+        <h3>If someone pushes a loan at you</h3>
         <ul className="plain">
           {card.lines.map((l, i) => (
             <li key={i}>“{l}”</li>

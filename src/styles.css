@@ -217,6 +217,8 @@ td.num,
   font-weight: 500;
   color: var(--muted);
   letter-spacing: -0.01em;
+  /* "My card" wrapped to two lines at 375px without this. */
+  white-space: nowrap;
 }
 .switch button[data-on='true'] {
   background: var(--surface);
@@ -1206,4 +1208,67 @@ details.card[open] > summary {
     margin: 0;
     border-radius: 0;
   }
+}
+
+/* --- the act-first card (verdict: do not borrow) -------------------------- */
+
+.negcard[data-kind='act_first'] {
+  border-top-color: var(--stop);
+}
+.negcard[data-kind='act_first'] .output-id {
+  color: var(--stop);
+}
+.negcard[data-kind='act_first'] .negcard-head .because {
+  margin-top: 0.5rem;
+}
+.negcard .blockers {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+.negcard .blockers h3,
+.negcard .unlock h3 {
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.negcard .blockers h3 {
+  color: var(--stop);
+}
+.negcard .blockers li {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+.negcard ol.steps {
+  padding-left: 1.2rem;
+  margin: 0.4rem 0 0;
+}
+.negcard ol.steps li {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.6rem;
+  color: var(--ink);
+  padding-left: 0.2rem;
+  /* The quoted-line rule belongs to spoken lines, not to numbered steps. */
+  border-left: none;
+}
+.negcard ol.steps li::marker {
+  color: var(--brand);
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.negcard .unlock {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--brand-soft);
+  border-radius: var(--r-sm);
+}
+.negcard .unlock p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0.25rem 0 0;
 }
