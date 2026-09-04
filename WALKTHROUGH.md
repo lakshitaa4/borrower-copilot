@@ -164,13 +164,31 @@ test stops asking "could you survive a 20% income drop?" and starts asking "coul
 you survive it *given what you actually cannot stop paying?*" — which is the
 question that decides whether a loan defaults.
 
-Two honest notes. The sanctioned route for this in India is the Account
-Aggregator framework, consent-based and revocable, rather than asking people to
-upload PDFs — building it any other way would be the wrong lesson. And it cuts
-against the promise on the front page that nothing leaves the device. Statement
-parsing would have to happen on-device, or the claim has to change; I would
-rather narrow the feature than quietly widen what the app does with someone's
-transaction history.
+The route matters as much as the feature. The sanctioned way to get this data
+in India is the Account Aggregator framework — consent-based, scoped and
+revocable — rather than asking people to upload PDFs; building it any other way
+would be the wrong lesson even where it is easier.
+
+And it sits against the promise on the front page that nothing leaves the
+device, which I would keep rather than quietly drop. The resolution is
+architectural before it is contractual: **the statement never has to leave, only
+the summary does.** Parsing and categorising three months of transactions is
+ordinary string and arithmetic work — it belongs on-device, and what comes out
+the other side is four or five aggregates ("non-compressible spend ₹18,400,
+compressible ₹9,100"). Those are what the engine needs. The raw rows — every
+merchant, every date, every amount — never need to be transmitted at all, and a
+design that ships them anyway has conceded something it did not need to.
+
+Where a model genuinely helps is the messy tail: Indian merchant strings are
+chaotic and a small local model classifies them far better than a regex will.
+That can run on-device too. If it ever could not, the fallbacks in order of
+preference are a self-hosted model, then an enterprise endpoint under terms that
+exclude training on customer data and can be configured for zero retention — and
+for any lender deploying this, RBI's payment-data localisation requirements
+would decide the hosting question before commercial preference did.
+
+The honest summary: this is the one item on the list where the *engineering*
+is easy and the data handling is the whole problem.
 
 **2. Fetch the credit score instead of asking for it.**
 "Do you know your score?" is the widest band-widener in the app: not knowing costs
