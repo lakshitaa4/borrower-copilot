@@ -31,13 +31,13 @@ import {
 import {
   type BorrowerFacts,
   type ProductKind,
+  continuingEmi,
   hasHighCostDebt,
   hi,
   householdIncome,
   isKnown,
   isProductive,
   lo,
-  totalExistingEmi,
 } from './facts';
 import { band, type Band } from './emi';
 import { formatINR, formatPct, type TraceStep } from './trace';
@@ -302,7 +302,7 @@ export function safeCapacity(
 
   const expenses = householdExpenses(facts, income, assumptions);
   const rentBand = rent(facts, income, assumptions);
-  const existingEmi = totalExistingEmi(facts);
+  const existingEmi = continuingEmi(facts);
   const emiLow = lo(existingEmi, 0);
   const emiHigh = hi(existingEmi, 0);
 
@@ -448,7 +448,7 @@ export function affordability(
   const income = assessedIncome(facts);
   const foir = foirCeiling(facts, income.value, product);
 
-  const existingEmi = totalExistingEmi(facts);
+  const existingEmi = continuingEmi(facts);
   const emiLow = lo(existingEmi, 0);
   const emiHigh = hi(existingEmi, 0);
 

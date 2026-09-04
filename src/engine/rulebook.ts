@@ -199,6 +199,20 @@ export const CO_APPLICANT_INCOME_WEIGHT = rule(
 // Borrower-side affordability (cashflow surplus)
 // ---------------------------------------------------------------------------
 
+export const CONSOLIDATION_REPLACES_DEBT = rule(
+  'safe.consolidation_replaces_debt',
+  'Affordability — borrower',
+  'When the purpose is consolidation, the existing EMIs are treated as repaid by the new loan',
+  true,
+  'A consolidation loan pays off what it replaces, so charging the borrower for ' +
+    'both at once is simply wrong arithmetic — it made a nurse with ₹19,000 of ' +
+    'existing EMIs look as though a loan to clear them would leave her with ' +
+    'nothing, which is the opposite of what consolidation does. The assumption ' +
+    'is that the new loan fully repays the old debt; where it does not, the ' +
+    'residual obligation is understated, and the app says so.',
+  JUDGEMENT,
+);
+
 export const CO_APPLICANT_IN_HOUSEHOLD = rule(
   'safe.co_applicant_counts_twice',
   'Affordability — borrower',
@@ -307,6 +321,14 @@ export const PRODUCTIVE_GAIN_HAIRCUT = rule(
 export interface ProductConfig {
   label: string;
   secured: boolean;
+  /**
+   * True when the security *is* the thing being bought — a house, a scooter.
+   * The borrower does not own it yet, so the LTV cap cannot be applied against
+   * collateral they already have. Without this distinction every home loan
+   * collapsed to zero: a first-time buyer has no property to pledge, which is
+   * precisely why they are asking for the loan.
+   */
+  securedByPurchase?: boolean;
   minTenureMonths: number;
   maxTenureMonths: number;
   /** Prudent tenure for the borrower-safe number — shorter than the maximum. */
@@ -335,6 +357,7 @@ export const PRODUCTS = rule<Record<ProductKind, ProductConfig>>(
     home: {
       label: 'Home loan',
       secured: true,
+      securedByPurchase: true,
       minTenureMonths: 120,
       maxTenureMonths: 360,
       prudentTenureMonths: 240,
@@ -368,6 +391,7 @@ export const PRODUCTS = rule<Record<ProductKind, ProductConfig>>(
     two_wheeler: {
       label: 'Two-wheeler / EV loan',
       secured: true,
+      securedByPurchase: true,
       minTenureMonths: 12,
       maxTenureMonths: 48,
       prudentTenureMonths: 36,

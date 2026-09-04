@@ -23,13 +23,13 @@ import { VERDICT_THRESHOLDS, PRODUCTS } from './rulebook';
 import {
   type BorrowerFacts,
   type ProductKind,
+  continuingEmi,
   hasHighCostDebt,
   hi,
   householdIncome,
   isKnown,
   isProductive,
   lo,
-  totalExistingEmi,
 } from './facts';
 import { band, principalFromEmi, type Band } from './emi';
 import { formatINR, formatINRCompact, formatPct, type TraceStep } from './trace';
@@ -90,7 +90,9 @@ export function decideVerdict(
   // Household income: the co-applicant is jointly liable and shares the costs,
   // so they belong in the obligation ratio exactly as they belong in the surplus.
   const incomeLow = householdIncome(facts).low;
-  const existingEmi = hi(totalExistingEmi(facts), 0);
+  // What will still be owed after this loan — zero when consolidating, since
+  // the new loan repays what it replaces.
+  const existingEmi = hi(continuingEmi(facts), 0);
 
   // The hard obligation ceiling is measured against a *bad* month, not an
   // average one — a borrower with variable income has to make the payment then.

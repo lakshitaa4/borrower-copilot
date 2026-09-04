@@ -5,7 +5,7 @@ import { bandWidth } from '../emi';
 import { PRODUCTS } from '../rulebook';
 import { comparisonAmount } from '../explain';
 import { compareQuote } from '../pricing';
-import { exact } from '../facts';
+import { exact, type BorrowerFacts } from '../facts';
 
 /**
  * Golden tests for the three borrowers in the brief.
@@ -394,5 +394,55 @@ describe('the app never upsells', () => {
     const modest = assess({ ...priya, amountWanted: exact(50000) });
     expect(modest.verdict.verdict).toBe('BORROW');
     expect(modest.verdict.suggestedAmount!.high).toBeLessThanOrEqual(50000);
+  });
+});
+
+describe('borrowers unlike the three in the brief', () => {
+  /**
+   * Found by running strangers through the engine. Both were cases the three
+   * example borrowers happen not to cover, which is exactly why they survived.
+   */
+  const teacher: BorrowerFacts = {
+    purpose: 'home_purchase', amountWanted: exact(3500000), productWanted: 'home',
+    incomeType: 'salaried', netMonthlyIncome: exact(78000), existingEmiTotal: exact(0),
+    householdExpenses: exact(30000), rent: exact(12000), age: exact(51),
+    creditScore: exact(742), dependants: exact(2), emergencySavingsMonths: exact(8),
+  };
+
+  it('does not collapse a home loan to zero for someone who owns no property', () => {
+    // The house being bought IS the security. Capping the loan at a share of
+    // collateral the borrower already holds made every first-time buyer
+    // ineligible - which is precisely who a home loan is for.
+    const a = assess(teacher);
+    expect(a.product).toBe('home');
+    expect(a.eligibility.lenderMax.high).toBeGreaterThan(1000000);
+    expect(a.verdict.verdict).not.toBe('DONT_BORROW');
+  });
+
+  it('still caps a loan against collateral the borrower must already own', () => {
+    // The exemption must not leak into LAP, where existing property is the point.
+    const noProperty = assess({
+      ...teacher, purpose: 'business_expansion', productWanted: 'lap',
+      collateralType: 'none', collateralValue: exact(0),
+    });
+    expect(noProperty.product).not.toBe('lap');
+  });
+
+  it('treats a consolidation loan as replacing debt, not adding to it', () => {
+    const nurse: BorrowerFacts = {
+      purpose: 'debt_consolidation', amountWanted: exact(300000), productWanted: 'personal',
+      incomeType: 'salaried', netMonthlyIncome: exact(52000), existingEmiTotal: exact(19000),
+      householdExpenses: exact(18000), rent: exact(9000), age: exact(44),
+      creditScore: exact(701), dependants: exact(1), emergencySavingsMonths: exact(2),
+    };
+    const consolidating = assess(nurse);
+    const sameButAdding = assess({ ...nurse, purpose: 'consumption' });
+
+    // Charging her for both the old EMIs and the new one made the very loan
+    // that would clear them look unaffordable.
+    expect(consolidating.affordability.safeEmi.high).toBeGreaterThan(
+      sameButAdding.affordability.safeEmi.high,
+    );
+    expect(consolidating.verdict.verdict).not.toBe('DONT_BORROW');
   });
 });

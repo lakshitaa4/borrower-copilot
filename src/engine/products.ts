@@ -104,7 +104,10 @@ function capacityFor(product: ProductKind, facts: BorrowerFacts): number {
   const config = PRODUCTS[product];
   let cap = config.maxAmountRupees;
 
-  if (config.maxLtvPct !== undefined && product !== 'two_wheeler') {
+  // An LTV cap only bites against collateral the borrower already owns. For a
+  // home or a vehicle the asset being financed is itself the security, so the
+  // cap constrains the loan-to-price ratio at purchase, not their net worth.
+  if (config.maxLtvPct !== undefined && config.securedByPurchase !== true) {
     const collateral = usableCollateral(facts);
     // Secured lending needs security. No collateral, no capacity.
     const value = isKnown(collateral) ? lo(collateral, 0) : 0;

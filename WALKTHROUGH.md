@@ -34,12 +34,15 @@ asked for outlined on top — because two figures in separate boxes do not conve
 plus an unproductive purpose. The useful advice is a shorter tenure and a smaller
 ticket, and to stop treating the sanction letter as a measure of affordability.
 
-**Ravi** → *borrow less, and secured.* He walks in asking for an unsecured business
-loan at 19–25%. He owns his shop outright. Routing him to a property-backed loan is
-worth about **9.3 percentage points a year** — more than any negotiation on an
-unsecured rate could ever get him. His missing credit score is modelled as a *range*
-of grades (A to C), not as a bad score, because 14 years of never defaulting on
-anything is not the same as a default.
+**Ravi** → *borrow, but secured.* He walks in asking for an unsecured business loan,
+where his thin file prices him at **16–28.6%**. He owns his shop outright, and against
+it the same money is **9–17.3%** — roughly **11 points** off the top of his band, and
+more than any negotiation on an unsecured rate could ever get him. Routing, not
+haggling, is his whole answer. With his wife's ₹18,000 counted as household income he
+can carry the full ₹15,00,000 he asked for, and the app does not push him toward the
+~₹20,00,000 his capacity would technically allow. His missing credit score is modelled
+as a *range* of grades (A to C), not as a bad score, because 14 years of never
+defaulting on anything is not the same as a default.
 
 **Anita** → *don't borrow.* Her surplus is negative, and her existing app-loan EMIs
 already exceed the FOIR headroom a lender would allow — a lender would advance ₹0.
@@ -110,8 +113,8 @@ man with an unencumbered ₹45,00,000 shop and a second earner at home.
 
 It also surfaced the thing I would not have found by reasoning: a joint
 application is Anita's *only* route. The engine can now sweep it — she needs a
-co-applicant earning about **₹18,000** before she has any capacity at all, and
-about **₹22,400** before the answer becomes yes. She would never learn that from
+co-applicant earning about **₹16,900** before she has any capacity at all, and
+about **₹20,900** before the answer becomes yes. She would never learn that from
 a refusal, and the card now tells her.
 
 **Headroom is not a recommendation.** With the household counted properly, Ravi's

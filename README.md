@@ -31,7 +31,7 @@ Fastest way to see what it does: tap one of the three example borrowers on the
 opening screen. Same four questions, three completely different answers.
 
 ```bash
-npm test          # 94 tests, ~1s
+npm test          # 102 tests, ~1s
 npm run build     # typecheck + production build
 npm run docs      # regenerate RULES.md and RUNTHROUGHS.md from the code
 ```

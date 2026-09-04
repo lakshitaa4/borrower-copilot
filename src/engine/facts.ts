@@ -254,6 +254,19 @@ export function totalExistingEmi(facts: BorrowerFacts): Num {
   return facts.existingEmiTotal ?? UNKNOWN;
 }
 
+/**
+ * The EMIs that will still be running *after* this loan is taken.
+ *
+ * A consolidation loan repays what it replaces, so counting both the old
+ * instalments and the new one double-charges the borrower and makes the very
+ * thing that would help them look unaffordable. Anything asking "what else will
+ * they owe?" uses this rather than the raw total.
+ */
+export function continuingEmi(facts: BorrowerFacts): Num {
+  if (facts.purpose === 'debt_consolidation') return exact(0);
+  return totalExistingEmi(facts);
+}
+
 /** Does the borrower carry app/payday-style debt? Anita does; it changes the verdict. */
 export function hasHighCostDebt(facts: BorrowerFacts): boolean {
   return (facts.existingLoans ?? []).some(
